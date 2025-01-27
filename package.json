@@ -2,10 +2,13 @@
     "name": "UltraMX_bot",
     "version": "1.1.0",
     "description": "simple telgram bot",
-    "main": "node UltraMX_bot.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+    "main": "UltraMX_bot.js",
+    "engines": {
+  "node": ">=20.0.0"
     },
+  "scripts": {
+    "start": "node UltraMX_bot.js"
+  },
     "keywords": ["MX-ΩMΞGA","UltraMX_bot","mxgamecoder","telegram","bot","telegram-bot","telegram-bot-api","telegram-bot-api-node","gamecoder","mx"],
     "author": "MX-GAMECODER",
     "license": "ISC",
