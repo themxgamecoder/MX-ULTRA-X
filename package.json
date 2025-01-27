@@ -1,0 +1,20 @@
+{
+    "name": "MX-ΩMΞGA",
+    "version": "1.1.0",
+    "description": "simple telgram bot",
+    "main": "UltraMX_bot.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": ["MX-ΩMΞGA","UltraMX_bot","mxgamecoder","telegram","bot","telegram-bot","telegram-bot-api","telegram-bot-api-node","gamecoder","mx"],
+    "author": "MX-GAMECODER",
+    "license": "ISC",
+    "dependencies": {
+      "@types/node": "^18.0.6",
+      "axios": "^1.7.9",
+      "dotenv": "^16.4.7",
+      "mongoose": "^8.9.5",
+      "node-telegram-bot-api": "^0.66.0",
+      "telegraf": "^4.16.3"
+    }
+  }  
