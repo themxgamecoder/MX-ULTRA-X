@@ -1,6 +1,6 @@
 // settings.js
 module.exports = {
-    botName: 'MX-ΩMΞGA', // Bot name
+    botName: 'MX-ULTRA-X', // Bot name
     botCreator: 'MX GΔMΞCØDΞR', // Your name as the bot creator
     botVersion: '1.1.0', // Version of the bot
     adminChatId: '6408716304', // Your Telegram ID for notifications
