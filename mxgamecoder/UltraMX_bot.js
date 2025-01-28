@@ -34,6 +34,12 @@ async function handleUserInput(bot, msg) {
   const chatId = msg.chat.id;
   const userText = msg.text;
 
+  // Check if userText exists
+  if (!userText) {
+    bot.sendMessage(chatId, "Oops! I can only understand text messages for now. 🤖 Please try again.");
+    return;
+  }
+
   // Allow /start command regardless of registration or login
   if (userText.startsWith('/start')) {
     await handleStart(bot, msg);

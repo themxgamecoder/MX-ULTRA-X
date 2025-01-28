@@ -65,4 +65,4 @@ async function getUserPin(userId) {
   }
 }
 
-module.exports = { savePin, validatePin, getUserPin }
+module.exports = { Pin, savePin, validatePin, getUserPin };

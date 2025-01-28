@@ -1,5 +1,5 @@
 const axios = require('axios'); // Import axios for API requests
-const { botName, botCreator, botVersion } = require('../settings'); // Import bot settings
+const { botName, defaultPrefix, botCreator, botVersion } = require('../settings'); // Import bot settings
 
 module.exports = function setupDashboard(bot, chatId) {
   // Fetch a random quote from the API
@@ -18,6 +18,7 @@ module.exports = function setupDashboard(bot, chatId) {
       bot.sendMessage(chatId,  `🌟 *Hello, my dearest friend!* 🌟\n\n` +
         `💌 Life’s better when we share moments together, isn't it? 🥰 Let’s explore some magical features!\n\n` +
         `💡 *Bot Version:* ${botVersion}\n` +
+        `👾 *Prefix:*  ${defaultPrefix}\n` +
         `👑 *Brought to you by:* ${botCreator}\n\n` +
         `🔮 *Quote of the Moment:* "${quote}"\n\n` + // Display the fetched quote
         `🌹 *🏠 Main Menu:* 🌹\n\n` +
