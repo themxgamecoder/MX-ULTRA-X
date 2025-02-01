@@ -1,11 +1,14 @@
-const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process'); // Import exec from child_process
 const { Pin } = require('../mxgamecoder/pin'); // Import Pin model
 const { Admin } = require('../mxgamecoder/admin'); // Import Admin model
 const { handlePrefixError } = require('../mxgamecoder/prefix'); // Prefix error handling
+const { loadCommands } = require('../plugins'); // Import loadCommands function
 
 module.exports = {
   name: 'update', // Command name
-  description: 'Update the bot\'s repository and install dependencies.',
+  description: 'Update the bot\'s plugins folder and restart the bot.',
   execute: async (bot, msg) => {
     const chatId = msg.chat.id;
     const userText = msg.text.trim();
@@ -26,15 +29,24 @@ module.exports = {
       return bot.sendMessage(chatId, '🚫 *Only admins can use this command.*');
     }
 
-    await bot.sendMessage(chatId, '⬇️ *Updating the bot...*');
-    
-    exec('git pull && npm install', { cwd: path.join(__dirname, '../plugins') }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error updating bot: ${stderr}`);
-        return bot.sendMessage(chatId, `❌ *An error occurred while updating the bot.*\n\nError: ${stderr}`);
-      }
-      console.log(`Bot updated: ${stdout}`);
-      bot.sendMessage(chatId, '✅ *Bot updated successfully.*');
-    });
+    await bot.sendMessage(chatId, '⬇️ *Updating the bot\'s plugins folder...*');
+
+    try {
+      loadCommands();
+      bot.sendMessage(chatId, '✅ *Plugins folder updated and commands reloaded successfully.*');
+
+      // Restart the bot
+      exec('pm2 restart mx-ultra-x-bot', (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error restarting bot: ${stderr}`);
+          return bot.sendMessage(chatId, `❌ *An error occurred while restarting the bot.*\n\nError: ${stderr}`);
+        }
+        console.log(`Bot restarted: ${stdout}`);
+        bot.sendMessage(chatId, '✅ *Bot restarted successfully.*');
+      });
+    } catch (error) {
+      console.error('Error updating plugins folder:', error);
+      bot.sendMessage(chatId, '❌ *An error occurred while updating the plugins folder.*');
+    }
   },
 };

@@ -1,11 +1,10 @@
-const os = require('os');
 const { Pin } = require('../mxgamecoder/pin'); // Import Pin model
+const { Admin } = require('../mxgamecoder/admin'); // Import Admin model
 const { handlePrefixError } = require('../mxgamecoder/prefix'); // Prefix error handling
-const { botName } = require('../settings'); // Import bot settings
 
 module.exports = {
-  name: 'status', // Command name
-  description: 'Retrieve the current status of the bot.',
+  name: 'shutdown', // Command name
+  description: 'Safely restart the bot.',
   execute: async (bot, msg) => {
     const chatId = msg.chat.id;
     const userText = msg.text.trim();
@@ -20,17 +19,18 @@ module.exports = {
       return bot.sendMessage(chatId, '🚫 *You are not registered. Register first to use this command.*');
     }
 
-    const uptime = os.uptime();
-    const cpuUsage = os.loadavg();
-    const memoryUsage = process.memoryUsage();
+    // Check if the user is an admin
+    const isAdmin = await Admin.findOne({ userId: chatId.toString() });
+    if (!isAdmin) {
+      return bot.sendMessage(chatId, '🚫 *Only admins can use this command.*');
+    }
 
-    const statusMessage = `
-    📊 *${botName} Status:*
-    - Uptime: ${uptime} seconds
-    - CPU Usage: ${cpuUsage[0]}% (1 min avg), ${cpuUsage[1]}% (5 min avg), ${cpuUsage[2]}% (15 min avg)
-    - Memory Usage: ${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB RSS, ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB Heap Used
-    `;
+    await bot.sendMessage(chatId, '🔄 *Restarting the bot...*');
 
-    await bot.sendMessage(chatId, statusMessage);
+    // Exit the process to trigger a restart if managed by a process manager
+    setTimeout(() => {
+      bot.sendMessage(chatId, '✅ *Restart done.*');
+      process.exit(0);
+    }, 2000); // Adding a delay to ensure the message is sent
   },
 };

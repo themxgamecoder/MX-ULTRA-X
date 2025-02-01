@@ -8,4 +8,5 @@ module.exports = {
     availablePrefixes: [
       '.', '!', '#', '$', '%', '&', '*', '+', '-', '=', '^', '@', '~', '?', '|', '<', '>', '`', ':', ',' // don't not change please
     ],
+    detailsMessage: "I don't know", // Add the details message here
   };
