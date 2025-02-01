@@ -1,4 +1,5 @@
 const Qasim = require('api-qasim');
+const { botName } = require('../settings');
 
 module.exports = {
   name: 'npm', // Command name without prefix
@@ -23,14 +24,15 @@ module.exports = {
 
       let message = `
 ┌──「 STALKING NPM 
-▢ 🔖Name: ${name} 
-▢ 🔖Creator: ${author?.name || 'Unknown'}
-▢ 👥Total Versions: ${versionCount}
-▢ 📌Description: ${description}
-▢ 🧩Repository: ${repository?.url || 'No repository available'}
-▢ 🌍Homepage: ${homepage || 'No homepage available'}
-▢ 🏷️Dist Tags: Latest Version: ${distTags.latest}
-▢ 🔗Link: [NPM Package](https://npmjs.com/package/${name})
+▢ 🔖Name: ${name}\n\n
+▢ 🔖Creator: ${author?.name || 'Unknown'}\n\n
+▢ 👥Total Versions: ${versionCount}\n\n
+▢ 📌Description: ${description}\n\n
+▢ 🧩Repository: ${repository?.url || 'No repository available'}\n\n
+▢ 🌍Homepage: ${homepage || 'No homepage available'}\n\n
+▢ 🏷️Dist Tags: Latest Version: ${distTags.latest}\n\n
+▢ 🔗NPM Package Link: https://npmjs.com/package/${name}\n\n
+▢  💡 Bot Name: ${botName}
 └────────────`;
 
       await bot.sendMessage(chatId, message);

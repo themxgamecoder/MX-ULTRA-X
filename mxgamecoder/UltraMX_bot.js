@@ -2,17 +2,36 @@ const { saveUsername, checkUsernameExists } = require('./username');
 const { savePin, validatePin, getUserPin } = require('./pin');
 const { notifyNewSignup, notifyError } = require('./notifications');
 const setupDashboard = require('../plugins/dashboard');
-const { botName } = require('../settings');
-const { handlePrefixError } = require('./prefix'); // Import error handling 
+const { botName, adminChatId } = require('../settings');
+const { handlePrefixError } = require('./prefix'); // Import error handling
 const { loadCommands, handleCommand } = require('../plugins');
+const { Ban } = require('./admin'); // Import Ban model to check ban status
+const Mute = require('./mute'); // Import Mute model to check mute status
+
 let userStates = {}; // Track users' states (username or PIN input)
 let userInfo = {}; // Store user information separately for username and PIN
 
 // Load commands during startup
 loadCommands();
 
+
 async function handleStart(bot, msg) {
   const chatId = msg.chat.id;
+
+  // Check if the user is banned
+  const isBanned = await Ban.findOne({ userId: chatId.toString() });
+  if (isBanned) {
+    bot.sendMessage(chatId, `🚫 *You are banned and cannot use any commands.* Reason: ${isBanned.reason}`);
+    return;
+  }
+
+  // Check if the user is muted
+  const isMuted = await Mute.findOne({ userId: chatId.toString(), muteEnd: { $gt: new Date() } });
+  if (isMuted) {
+    bot.sendMessage(chatId, `🔇 *You are muted and cannot use any commands until ${isMuted.muteEnd.toLocaleTimeString()}.*`);
+    return;
+  }
+
 
   // Check if the user is already registered by checking their PIN
   const userPin = await getUserPin(chatId);
@@ -33,6 +52,21 @@ async function handleStart(bot, msg) {
 async function handleUserInput(bot, msg) {
   const chatId = msg.chat.id;
   const userText = msg.text;
+
+  // Check if the user is banned
+  const isBanned = await Ban.findOne({ userId: chatId.toString() });
+  if (isBanned) {
+    bot.sendMessage(chatId, `🚫 *You are banned and cannot use any commands.* Reason: ${isBanned.reason}`);
+    return;
+  }
+
+// Check if the user is muted
+const isMuted = await Mute.findOne({ userId: chatId.toString(), muteEnd: { $gt: new Date() } });
+if (isMuted) {
+  bot.sendMessage(chatId, `🔇 *You are muted and cannot use any commands until ${isMuted.muteEnd.toLocaleTimeString()}.*`);
+  return;
+}
+
 
   // Check if userText exists
   if (!userText) {

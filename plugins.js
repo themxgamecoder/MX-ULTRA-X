@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { defaultPrefix } = require('./settings');
+const { Ban } = require('./mxgamecoder/admin'); // Import Ban model to check ban status
+const Mute = require('./mxgamecoder/mute'); // Import Mute model to check mute status
 
 let commands = {};
 
@@ -21,9 +23,23 @@ function loadCommands() {
 }
 
 // Handle incoming commands
-function handleCommand(bot, msg) {
+async function handleCommand(bot, msg) {
   const chatId = msg.chat.id;
   const userText = msg.text.trim();
+
+  // Check if the user is banned
+  const isBanned = await Ban.findOne({ userId: chatId.toString() });
+  if (isBanned) {
+    bot.sendMessage(chatId, `🚫 *You are banned and cannot use any commands.* Reason: ${isBanned.reason}`);
+    return;
+  }
+
+  // Check if the user is muted
+  const isMuted = await Mute.findOne({ userId: chatId.toString(), muteEnd: { $gt: new Date() } });
+  if (isMuted) {
+    bot.sendMessage(chatId, `🔇 *You are muted and cannot use any commands until ${isMuted.muteEnd.toLocaleTimeString()}.*`);
+    return;
+  }
 
   // Check if the message starts with the default prefix
   if (userText.startsWith(defaultPrefix)) {
